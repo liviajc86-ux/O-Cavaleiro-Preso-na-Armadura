@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O Cavaleiro Preso na Armadura</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --night: #1E2438;
+    --night-deep: #14182A;
+    --parchment: #F4EDDC;
+    --parchment-warm: #EFE6D0;
+    --bronze: #B08D4E;
+    --bronze-light: #D9BA80;
+    --rust: #9C5A3C;
+    --rust-light: #BD7C5A;
+    --wine: #6B3040;
+    --wine-light: #8C4A5C;
+    --sage: #55704F;
+    --sage-light: #7A9670;
+    --slate: #52606D;
+    --slate-light: #7C8B98;
+    --ink: #2A2218;
+    --ink-mid: #6B5E4E;
+    --border: rgba(42,34,24,0.15);
+    --border-light: rgba(244,237,220,0.16);
+  }
+
+  body {
+    background: var(--night);
+    font-family: 'Public Sans', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, .display {
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* ============ WELCOME OVERLAY ============ */
+  #welcome {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--night-deep);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .welcome-box {
+    max-width: 560px;
+    background: var(--parchment);
+    border-radius: 4px;
+    padding: 48px 40px;
+    position: relative;
+    border: 1px solid rgba(176,141,78,0.4);
+  }
+
+  .welcome-box::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 1px solid rgba(176,141,78,0.35);
+    pointer-events: none;
+  }
+
+  .welcome-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--bronze);
+    margin-bottom: 6px;
+  }
+
+  .welcome-box h2 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 18px;
+    line-height: 1.3;
+  }
+
+  .welcome-box p {
+    font-size: 14.5px;
+    color: var(--ink-mid);
+    margin-bottom: 14px;
+    font-weight: 300;
+  }
+
+  .welcome-note {
+    background: rgba(85,112,79,0.1);
+    border-left: 3px solid var(--sage);
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    margin: 20px 0;
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    padding: 13px 28px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: var(--night-deep);
+    color: var(--bronze-light);
+  }
+  .btn-primary:hover { background: #0d1020; }
+
+  /* ============ CAPA / HERO ============ */
+  .capa {
+    background:
+      radial-gradient(ellipse at 25% 20%, rgba(176,141,78,0.14) 0%, transparent 55%),
+      radial-gradient(ellipse at 75% 70%, rgba(107,48,64,0.18) 0%, transparent 55%),
+      var(--night);
+    padding: 110px 32px 90px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .capa-sigil {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 30px;
+    opacity: 0.85;
+  }
+
+  .capa-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--bronze-light);
+    margin-bottom: 22px;
+    letter-spacing: 0.5px;
+  }
+
+  .capa h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    color: var(--parchment);
+    line-height: 1.15;
+    max-width: 780px;
+    margin: 0 auto 20px;
+  }
+
+  .capa-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2.4vw, 22px);
+    color: rgba(244,237,220,0.72);
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .capa-rule {
+    width: 80px;
+    height: 1px;
+    background: var(--bronze);
+    margin: 34px auto 0;
+    opacity: 0.6;
+  }
+
+  /* ============ CONTAINER ============ */
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .intro-note {
+    max-width: 620px;
+    margin: 56px auto 0;
+    padding: 0 24px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: rgba(244,237,220,0.65);
+    line-height: 1.7;
+  }
+
+  /* ============ ATO HEADER ============ */
+  .ato {
+    padding: 90px 0 10px;
+  }
+
+  .ato-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .ato-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .ato-title {
+    font-size: clamp(26px, 4vw, 36px);
+    font-weight: 600;
+    color: var(--parchment);
+    line-height: 1.3;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .ato-divider {
+    width: 44px;
+    height: 2px;
+    margin: 22px auto 0;
+    opacity: 0.7;
+  }
+
+  /* accent colors per act */
+  .acc-wine .ato-num, .acc-wine .example-label { color: var(--wine-light); }
+  .acc-wine .ato-divider { background: var(--wine-light); }
+  .acc-bronze .ato-num, .acc-bronze .example-label { color: var(--bronze-light); }
+  .acc-bronze .ato-divider { background: var(--bronze-light); }
+  .acc-rust .ato-num, .acc-rust .example-label { color: var(--rust-light); }
+  .acc-rust .ato-divider { background: var(--rust-light); }
+  .acc-sage .ato-num, .acc-sage .example-label { color: var(--sage-light); }
+  .acc-sage .ato-divider { background: var(--sage-light); }
+  .acc-slate .ato-num, .acc-slate .example-label { color: var(--slate-light); }
+  .acc-slate .ato-divider { background: var(--slate-light); }
+
+  /* ============ NARRATIVE PANEL ============ */
+  .narrative-panel {
+    background: var(--parchment);
+    border-radius: 3px;
+    padding: 40px 44px;
+    margin-bottom: 4px;
+    position: relative;
+  }
+
+  .narrative-panel p {
+    font-size: 15.5px;
+    color: var(--ink);
+    margin-bottom: 15px;
+    font-weight: 300;
+  }
+  .narrative-panel p:last-child { margin-bottom: 0; }
+
+  .narrative-panel p:first-of-type::first-letter {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 700;
+    float: left;
+    line-height: 0.8;
+    padding: 6px 8px 0 0;
+    color: var(--bronze);
+  }
+
+  .narrative-panel strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ============ PSYCHOEDUCATION BLOCK ============ */
+  .psico-block {
+    background: var(--night-deep);
+    border-radius: 3px;
+    padding: 34px 40px;
+    margin-top: 4px;
+    border-top: 1px solid var(--border-light);
+  }
+
+  .psico-label {
+    font-family: 'Public Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--bronze-light);
+    margin-bottom: 14px;
+    opacity: 0.85;
+  }
+
+  .psico-block h4 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 12px;
+  }
+
+  .psico-block p {
+    font-size: 14px;
+    color: rgba(244,237,220,0.72);
+    font-weight: 300;
+    margin-bottom: 13px;
+    max-width: 62ch;
+  }
+
+  .psico-block p:last-child { margin-bottom: 0; }
+
+  .psico-block strong {
+    color: var(--parchment);
+    font-weight: 500;
+  }
+
+  .quote-line {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--bronze-light);
+    padding: 6px 0 6px 18px;
+    border-left: 2px solid var(--bronze);
+    margin: 16px 0;
+  }
+
+  .rule-list {
+    list-style: none;
+    margin: 14px 0;
+  }
+  .rule-list li {
+    font-size: 13.5px;
+    color: rgba(244,237,220,0.7);
+    font-weight: 300;
+    padding: 7px 0 7px 18px;
+    position: relative;
+    border-bottom: 1px solid rgba(244,237,220,0.08);
+  }
+  .rule-list li:last-child { border-bottom: none; }
+  .rule-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--bronze);
+    opacity: 0.7;
+  }
+
+  .costs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 20px;
+    margin: 14px 0;
+  }
+  .costs-grid span {
+    font-size: 13px;
+    color: rgba(244,237,220,0.65);
+    font-weight: 300;
+    padding-left: 14px;
+    position: relative;
+  }
+  .costs-grid span::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--rust-light);
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 560px) { .compare-grid, .costs-grid { grid-template-columns: 1fr; } }
+
+  .compare-col {
+    background: rgba(244,237,220,0.04);
+    border-radius: 3px;
+    padding: 18px 18px;
+  }
+  .compare-col h5 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 10px;
+  }
+  .compare-col ul { list-style: none; }
+  .compare-col li {
+    font-size: 12.5px;
+    color: rgba(244,237,220,0.62);
+    font-weight: 300;
+    padding: 3px 0;
+  }
+
+  .emphasis-box {
+    background: rgba(176,141,78,0.08);
+    border-left: 2px solid var(--bronze);
+    padding: 16px 20px;
+    margin: 16px 0;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16.5px;
+    color: var(--parchment);
+    line-height: 1.55;
+  }
+
+  /* ============ CASTELO SUBSECTIONS ============ */
+  .castelo {
+    margin-bottom: 6px;
+  }
+  .castelo-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 34px 0 0;
+    padding: 0 44px;
+  }
+  .castelo-header:first-child { margin-top: 0; }
+  .castelo-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--bronze);
+  }
+  .castelo-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  /* ============ SECTION SPACING ============ */
+  .section-gap { height: 4px; }
+
+  /* ============ DESFECHO ============ */
+  .desfecho {
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(176,141,78,0.16) 0%, transparent 60%),
+      var(--night);
+    padding: 90px 0 100px;
+    text-align: center;
+  }
+  .desfecho-inner { max-width: 620px; margin: 0 auto; padding: 0 24px; }
+  .desfecho h2 {
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 600;
+    color: var(--parchment);
+    margin-bottom: 24px;
+  }
+  .desfecho p {
+    font-size: 15px;
+    color: rgba(244,237,220,0.72);
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+  .desfecho .quote-line { margin: 26px auto; max-width: 480px; text-align: left; }
+  .value-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 26px;
+  }
+  .value-chip {
+    font-size: 12.5px;
+    color: var(--bronze-light);
+    border: 1px solid rgba(176,141,78,0.4);
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-weight: 400;
+  }
+
+  /* ============ REFLEXÃO FINAL ============ */
+  .reflexao {
+    background: var(--parchment);
+    padding: 90px 0 60px;
+  }
+  .reflexao .ato-title { color: var(--ink); }
+  .reflexao-sub {
+    text-align: center;
+    font-size: 14px;
+    color: var(--ink-mid);
+    max-width: 480px;
+    margin: 0 auto 44px;
+    font-weight: 300;
+  }
+
+  .q-block {
+    margin-bottom: 30px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .q-block:last-of-type { border-bottom: none; }
+
+  .q-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--bronze);
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 500;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .q-answer {
+    width: 100%;
+    min-height: 70px;
+    background: var(--parchment-warm);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px 14px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink);
+    resize: vertical;
+    line-height: 1.6;
+  }
+  .q-answer:focus { outline: none; border-color: var(--bronze); }
+  .q-answer::placeholder { color: rgba(42,34,24,0.35); }
+
+  .save-hint {
+    font-size: 11.5px;
+    color: var(--ink-mid);
+    opacity: 0.7;
+    margin-top: 6px;
+    min-height: 14px;
+  }
+
+  .reflexao-actions {
+    max-width: 620px;
+    margin: 20px auto 0;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 24px;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+  }
+  .btn-outline:hover { background: rgba(42,34,24,0.06); }
+  .btn-dark { background: var(--ink); color: var(--parchment); }
+  .btn-dark:hover { background: #382f22; }
+
+  .share-note {
+    max-width: 560px;
+    margin: 18px auto 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-mid);
+    opacity: 0.75;
+    padding: 0 24px;
+  }
+
+  /* ============ FOOTER ============ */
+  .footer {
+    background: var(--night-deep);
+    padding: 40px 24px 50px;
+    text-align: center;
+  }
+  .footer p {
+    font-size: 12px;
+    color: rgba(244,237,220,0.4);
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .divider-space { height: 18px; }
+
+  @media (max-width: 600px) {
+    .narrative-panel, .psico-block { padding: 28px 24px; }
+    .castelo-header { padding: 0 24px; }
+    .capa { padding: 80px 24px 70px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- WELCOME OVERLAY -->
+<div id="welcome">
+  <div class="welcome-box">
+    <div class="welcome-eyebrow">Antes de começar</div>
+    <h2>Bem-vindo(a) à história do Cavaleiro</h2>
+    <p>Este material conta a jornada de um cavaleiro que aprendeu a viver sob uma armadura pesada — e, aos poucos, encontrou um caminho para tirá-la. A cada parte da história, você encontrará uma pequena reflexão para ajudar a entender o que aquele momento pode representar psicologicamente.</p>
+    <p>Não é preciso pressa. Você pode ler em uma sentada ou em várias, e voltar sempre que quiser.</p>
+    <div class="welcome-note">🔒 Suas respostas na página de reflexão ficam salvas apenas no seu próprio navegador. Nada é enviado a ninguém, a menos que você escolha compartilhar ao final.</div>
+    <button class="btn btn-primary" onclick="document.getElementById('welcome').style.display='none'">Começar a leitura</button>
+  </div>
+</div>
+
+<!-- CAPA -->
+<div class="capa">
+  <svg class="capa-sigil" viewBox="0 0 64 64" fill="none">
+    <path d="M32 4 L52 14 V32 C52 46 42 54 32 60 C22 54 12 46 12 32 V14 Z" stroke="#B08D4E" stroke-width="1.4"/>
+    <path d="M32 14 L32 46 M22 24 L42 24" stroke="#B08D4E" stroke-width="1.2" opacity="0.7"/>
+  </svg>
+  <div class="capa-eyebrow">Uma fábula terapêutica</div>
+  <h1>O Cavaleiro Preso<br>na Armadura</h1>
+  <p class="capa-sub">Uma jornada do perfeccionismo à autocompaixão</p>
+  <div class="capa-rule"></div>
+</div>
+
+<p class="intro-note">"A armadura que um dia nos protegeu pode, com o tempo, tornar-se a própria prisão que impede a vida de acontecer."</p>
+
+<div class="container">
+
+  <!-- ================= ATO I ================= -->
+  <div class="ato acc-bronze">
+    <div class="ato-header">
+      <div class="ato-num">Primeiro Ato</div>
+      <h2 class="ato-title">A Armadura como Fachada e o Autovalor Condicional</h2>
+      <div class="ato-divider"></div>
+    </div>
+
+    <div class="narrative-panel">
+      <p>Havia, num reino distante, um cavaleiro que acreditava precisar ser bondoso, gentil, amoroso — e, acima de tudo, impecável. Desde muito jovem, aprendeu que ser amado e respeitado exigia nunca falhar, nunca decepcionar, nunca mostrar fraqueza diante dos outros.</p>
+      <p>Para dar conta de tudo isso, vestiu uma armadura de aço reluzente. No início, ela era leve e brilhante, e todos no reino a admiravam. Cavalgava de batalha em batalha, conquistando elogios, títulos e olhares de aprovação. A cada vitória, a armadura ganhava mais brilho — e, pouco a pouco, deixou de ser apenas uma proteção para se tornar a própria imagem de quem ele era.</p>
+      <p>O cavaleiro já não se lembrava muito bem de como era antes de vesti-la. O aço havia se tornado sua identidade.</p>
+    </div>
+
+    <div class="psico-block">
+      <div class="psico-label">O que a armadura representa?</div>
+      <p>Metaforicamente, a armadura pode representar as estratégias que desenvolvemos para nos proteger de experiências dolorosas — como crítica, rejeição, fracasso, vergonha ou a sensação de inadequação. Em algumas pessoas, essas estratégias podem se organizar em torno da ideia de que só é seguro ser visto quando se está impecável.</p>
+      <p>A metáfora nos ajuda a compreender o que a psicologia chama de <strong>autovalor condicional</strong>:</p>
+      <div class="quote-line">"Eu tenho valor quando sou bom, competente, útil, admirado ou quando não cometo erros."</div>
+      <p>Quando o valor pessoal fica condicionado ao desempenho, cada erro deixa de ser apenas um erro — e passa a ser sentido como uma ameaça à própria identidade. Nessas situações, é comum que regras rígidas comecem a comandar as escolhas do dia a dia, como:</p>
+      <ul class="rule-list">
+        <li>"Tenho que fazer tudo perfeitamente."</li>
+        <li>"Não posso decepcionar ninguém."</li>
+        <li>"Preciso ser o melhor."</li>
+        <li>"Se eu errar, vão perceber que não sou bom o suficiente."</li>
+        <li>"Preciso dar conta de tudo."</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-gap"></div>
+
+  <!-- ================= ATO II ================= -->
+  <div class="ato acc-rust">
+    <div class="ato-header">
+      <div class="ato-num">Segundo Ato</div>
+      <h2 class="ato-title">O Custo do Aço e a Desconexão Social</h2>
+      <div class="ato-divider"></div>
+    </div>
+
+    <div class="narrative-panel">
+      <p>Com o tempo, as pessoas mais próximas do cavaleiro começaram a sentir sua distância. Juliet e Christopher, que o amavam, tentavam se aproximar — chamavam por ele, buscavam seus olhos, queriam apenas estar perto. Mas encontravam sempre a mesma coisa: uma viseira fechada.</p>
+      <p>O que um dia fora criado para protegê-lo das lanças e das flechas das batalhas agora o impedia de sentir o toque de uma mão, de ouvir uma voz de perto, de simplesmente estar presente com quem o amava. A armadura que prometia segurança havia se tornado, sem que ele percebesse, uma barreira entre ele e a própria vida.</p>
+      <p>Algumas vezes tentaram arrancar o aço à força. Mas o cavaleiro apenas se fechava ainda mais, e as fendas da armadura pareciam se soldar cada vez que alguém insistia.</p>
+    </div>
+
+    <div class="psico-block">
+      <div class="psico-label">Quando a proteção começa a custar caro</div>
+      <p>Estratégias de proteção podem funcionar muito bem no curto prazo — e, ainda assim, produzir custos importantes quando se tornam rígidas e passam a ser usadas em todas as situações, mesmo quando já não fazem sentido.</p>
+      <p>A armadura, nesse ponto da história, pode ser relacionada a padrões como:</p>
+      <div class="costs-grid">
+        <span>Evitar vulnerabilidade</span>
+        <span>Esconder erros</span>
+        <span>Controlar excessivamente situações</span>
+        <span>Buscar aprovação constante</span>
+        <span>Evitar críticas a todo custo</span>
+        <span>Trabalhar ou produzir em excesso</span>
+        <span>Dificuldade de pedir ajuda</span>
+        <span>Dificuldade de demonstrar sentimentos</span>
+      </div>
+      <div class="emphasis-box">Aquilo que começou como proteção pode se transformar em prisão quando deixa de ser uma escolha e passa a comandar a vida.</div>
+      <p>A cena em que tentam arrancar a armadura à força também ilustra algo importante: mudar padrões psicológicos profundos raramente acontece por pressão, cobrança ou pura força de vontade — seja ela vinda de fora ou de dentro de nós mesmos.</p>
+    </div>
+  </div>
+
+  <div class="section-gap"></div>
+
+  <!-- ================= ATO III ================= -->
+  <div class="ato acc-slate">
+    <div class="ato-header">
+      <div class="ato-num">Terceiro Ato</div>
+      <h2 class="ato-title">A Trilha da Verdade e a Armadilha da Mente</h2>
+      <div class="ato-divider"></div>
+    </div>
+
+    <div class="narrative-panel">
+      <p>Exausto do peso que carregava, o cavaleiro seguiu por uma trilha até a floresta, onde encontrou Merlin. O velho mago não lhe deu ordens, nem respostas prontas — apenas se sentou ao seu lado e passou a caminhar junto dele, ajudando-o a enxergar o que já estava ali, mas que o cavaleiro não conseguia ver sozinho.</p>
+      <p>Merlin lhe mostrou algo que o cavaleiro nunca havia parado para notar: havia, dentro dele, uma voz que repetia as mesmas frases havia anos — sobre precisar provar seu valor, sobre não poder falhar, sobre precisar controlar tudo ao redor. Essa voz soava tão familiar que o cavaleiro nunca havia questionado se ela dizia a verdade.</p>
+    </div>
+
+    <div class="psico-block">
+      <div class="psico-label">A mente também pode criar armadilhas</div>
+      <p>Pensamentos, regras e estratégias de proteção podem se repetir tantas vezes que passam a soar como verdades absolutas — mesmo quando não são fatos, mas apenas interpretações. Alguns exemplos comuns dessa voz interna:</p>
+      <ul class="rule-list">
+        <li>"Se eu falhar, serei rejeitado."</li>
+        <li>"Preciso controlar tudo."</li>
+        <li>"Não posso demonstrar fraqueza."</li>
+        <li>"Preciso provar meu valor."</li>
+        <li>"Se alguém estiver decepcionado comigo, significa que fiz algo errado."</li>
+      </ul>
+      <p>O problema não é simplesmente ter esses pensamentos — todos nós os temos, em algum grau. A dificuldade surge quando passamos a ser rigidamente governados por eles, como se obedecê-los fosse obrigatório. Esse é o convite de Merlin: perceber que <strong>ter um pensamento não significa que precisamos obedecê-lo</strong>. Esse movimento, na psicologia, é chamado de <strong>desfusão cognitiva</strong> — a capacidade de observar um pensamento como um pensamento, e não como um fato absoluto sobre nós ou sobre o mundo.</p>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <h5>Pensamento</h5>
+          <ul><li>"Eu preciso ser perfeito."</li></ul>
+        </div>
+        <div class="compare-col">
+          <h5>Regra rígida</h5>
+          <ul><li>"Se eu não for perfeito, não tenho valor."</li></ul>
+        </div>
+      </div>
+      <div class="quote-line">Resposta flexível: "Posso preferir fazer bem feito, sem precisar ser perfeito para reconhecer meu próprio valor."</div>
+    </div>
+  </div>
+
+  <div class="section-gap"></div>
+
+  <!-- ================= ATO IV ================= -->
+  <div class="ato acc-wine">
+    <div class="ato-header">
+      <div class="ato-num">Quarto Ato</div>
+      <h2 class="ato-title">A Passagem pelos Três Castelos</h2>
+      <div class="ato-divider"></div>
+    </div>
+
+    <div class="narrative-panel castelo">
+
+      <div class="castelo-header">
+        <span class="castelo-num">I.</span>
+        <span class="castelo-name">O Castelo do Silêncio</span>
+      </div>
+      <p>Ao entrar no primeiro castelo, acompanhado apenas do silêncio, o cavaleiro encontrou o Rei, que lhe ensinou que as pessoas erguem barreiras para esconder quem realmente são. Sozinho no escuro, privado do ruído das batalhas e dos monólogos de autopromoção que costumava repetir para si mesmo, o cavaleiro teve de encarar seu maior temor: o medo da solidão, e a dor de ter abafado, por anos, a voz triste de sua esposa.</p>
+      <p>Ao chorar copiosamente pela dor do outro, o elmo enferrujou e caiu. Foi ali, no silêncio, que ele ouviu pela primeira vez sua voz interna genuína — que estivera calada sob o ruído constante da autocrítica.</p>
+
+      <div class="divider-space"></div>
+
+      <div class="castelo-header">
+        <span class="castelo-num">II.</span>
+        <span class="castelo-name">O Castelo do Conhecimento</span>
+      </div>
+      <p>No segundo castelo, o cavaleiro deparou-se com inscrições luminosas nas paredes. A primeira perguntava: <em>"Será que você não confundiu necessidade com amor?"</em>. Ele compreendeu que necessitava desesperadamente da aprovação das donzelas, de Juliet e de todo o reino, porque não se amava.</p>
+      <p>Diante de um espelho especial, não viu o homem cansado e feio que temia ser — viu uma pessoa plena de compaixão e inocência, o seu potencial real, que fora escondido pela armadura durante todos aqueles anos.</p>
+      <p>No pátio, ao lado de uma macieira, Merlin explicou a diferença crucial entre a ambição da mente e a ambição do coração: a macieira não compete nem tenta provar que é melhor do que as outras árvores; ela simplesmente dá seus frutos com fluidez e flexibilidade. O cavaleiro percebeu, então, que tentar provar ser "o melhor" fora uma ilusão desgastante.</p>
+
+      <div class="divider-space"></div>
+
+      <div class="castelo-header">
+        <span class="castelo-num">III.</span>
+        <span class="castelo-name">O Castelo da Vontade e da Ousadia</span>
+      </div>
+      <p>Na entrada do último castelo, o cavaleiro encontrou um gigantesco dragão cuspidor de fogo azul: o Dragão do Medo e da Dúvida. De início, recuou queimado, acreditando na ameaça do monstro.</p>
+      <p>Porém, encorajado pelos animais e por Sam, lembrou-se de que o medo do julgamento e da falha é uma distorção — uma ilusão que só ganha poder quando se acredita nela por completo. Ao marchar em frente, repetindo que o medo era apenas uma ilusão, o dragão foi encolhendo até virar do tamanho de um sapo, e então desapareceu.</p>
+    </div>
+
+    <div class="psico-block">
+      <div class="psico-label">O silêncio como encontro consigo mesmo</div>
+      <p>O silêncio do primeiro castelo simboliza o momento em que paramos de fugir e nos encontramos com nós mesmos. Sem batalhas para vencer nem aplausos para conquistar, sobra espaço para o contato com as próprias emoções, a vulnerabilidade, a solidão, o reconhecimento das necessidades e da dor — e uma escuta interna que havia sido silenciada.</p>
+      <p>É importante lembrar que <strong>autocompaixão não significa eliminar a dor</strong>, mas permitir-se reconhecê-la, sem responder a ela com violência interna. A queda do elmo enferrujado marca justamente o início dessa abertura e dessa vulnerabilidade.</p>
+
+      <div class="quote-line">"A macieira não precisa provar que é a melhor árvore. Ela simplesmente cresce e oferece seus frutos."</div>
+      <p><strong>Ser o melhor</strong> costuma envolver comparação, competição, necessidade de provar valor, medo de perder posição e dependência de reconhecimento externo. Já <strong>buscar a excelência de forma flexível</strong> envolve dedicação, crescimento, aprendizagem, valores pessoais, a possibilidade de errar e a capacidade de se adaptar. A excelência pode ser orientada por aquilo que realmente importa para nós; o perfeccionismo, com frequência, é alimentado pelo medo e pela necessidade de validação.</p>
+
+      <p>Já o dragão representa como pensamentos ameaçadores podem parecer enormes quando são tratados como verdades absolutas — e como podem encolher quando deixamos de obedecê-los automaticamente.</p>
+      <div class="emphasis-box">Coragem não é ausência de medo. É agir de maneira coerente com aquilo que importa, mesmo quando o medo está presente.</div>
+      <p>Esse movimento — agir na direção dos próprios valores mesmo sentindo medo — é o que a psicologia chama de <strong>ação comprometida</strong>, um dos pilares da flexibilidade psicológica.</p>
+    </div>
+  </div>
+
+  <div class="section-gap"></div>
+
+  <!-- ================= ATO V ================= -->
+  <div class="ato acc-sage">
+    <div class="ato-header">
+      <div class="ato-num">Quinto Ato</div>
+      <h2 class="ato-title">O Vértice da Verdade e a Libertação Compassiva</h2>
+      <div class="ato-divider"></div>
+    </div>
+
+    <div class="narrative-panel">
+      <p>No topo da montanha, o caminho final foi bloqueado por uma grande rocha, onde estava gravada a inscrição: <em>"Embora possua este universo, nada possuo, pois não posso conhecer o desconhecido, se ao conhecido me agarro."</em></p>
+      <p>Sam explicou que ele precisava soltar a rocha. "O conhecido" representava suas regras cognitivas rígidas — "tenho que ser o melhor", "nunca posso errar" — seus julgamentos absolutos e sua tentativa constante de controlar o incontrolável.</p>
+      <p>Apavorado diante da perda do controle, o cavaleiro finalmente soltou as mãos e despencou no abismo. Durante a queda, passou sua vida a limpo: percebeu que havia passado anos responsabilizando o mundo exterior e fugindo de suas próprias dores. Ao assumir a responsabilidade por sua história — com aceitação, e sem autopunição — o medo de falhar perdeu o poder de paralisá-lo.</p>
+      <p>Inesperadamente, a queda transformou-se em libertação. Ele alcançou o topo da montanha sem a necessidade do aço.</p>
+    </div>
+
+    <div class="psico-block">
+      <div class="psico-label">Soltar o que não pode ser controlado</div>
+      <p>A rocha pode ser entendida como a tentativa de controlar aquilo que, por natureza, não pode ser completamente controlado — o futuro, a opinião dos outros, a certeza de nunca errar. Alguns pensamentos rígidos costumam sustentar essa tentativa:</p>
+      <ul class="rule-list">
+        <li>"Tenho que ser o melhor."</li>
+        <li>"Não posso errar."</li>
+        <li>"Todos precisam gostar de mim."</li>
+        <li>"Preciso saber o que vai acontecer."</li>
+        <li>"Não posso decepcionar ninguém."</li>
+        <li>"Preciso evitar qualquer sofrimento."</li>
+      </ul>
+      <p>Aceitar não significa gostar, concordar ou desistir. </p>
+      <div class="emphasis-box">Aceitação significa abrir espaço para aquilo que já está acontecendo, em vez de gastar toda a energia tentando eliminar experiências internas inevitáveis.</div>
+      <p>A queda também ilustra uma distinção importante:</p>
+      <div class="compare-grid">
+        <div class="compare-col">
+          <h5>Responsabilidade</h5>
+          <ul><li>Reconhecer escolhas, padrões e possibilidades de mudança.</li></ul>
+        </div>
+        <div class="compare-col">
+          <h5>Autopunição</h5>
+          <ul><li>Transformar o reconhecimento do erro em ataque contra si mesmo.</li></ul>
+        </div>
+      </div>
+      <div class="quote-line">"Assumir responsabilidade não exige destruir a própria dignidade."</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= DESFECHO ================= -->
+<div class="desfecho">
+  <div class="desfecho-inner">
+    <div class="ato-num" style="color:var(--bronze-light)">Desfecho</div>
+    <h2>Sem a Armadura</h2>
+    <p>No topo da montanha, o cavaleiro não aparece como alguém que se tornou invulnerável. Pelo contrário: parece humano, cansado, imperfeito — e, pela primeira vez em muito tempo, livre para sentir.</p>
+    <div class="quote-line">"Meu valor não precisa ser conquistado novamente a cada desempenho."</div>
+    <p>Isso não significa acreditar que todas as escolhas foram boas, ou que nada precisa mudar. Significa separar:</p>
+    <p><strong>"Eu cometi um erro"</strong> de <strong>"Eu sou um erro."</strong><br><strong>"Eu não fui perfeito"</strong> de <strong>"Eu não tenho valor."</strong></p>
+    <p>A libertação do cavaleiro está relacionada à possibilidade de viver com mais:</p>
+    <div class="value-list">
+      <span class="value-chip">Flexibilidade</span>
+      <span class="value-chip">Autocompaixão</span>
+      <span class="value-chip">Presença</span>
+      <span class="value-chip">Vulnerabilidade</span>
+      <span class="value-chip">Conexão</span>
+      <span class="value-chip">Aceitação</span>
+      <span class="value-chip">Coerência com valores</span>
+      <span class="value-chip">Abertura para aprender</span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REFLEXÃO FINAL ================= -->
+<div class="reflexao">
+  <div class="container">
+    <div class="ato-header">
+      <div class="ato-num" style="color:var(--bronze)">Para refletir</div>
+      <h2 class="ato-title">E você: qual armadura tem usado?</h2>
+      <div class="ato-divider" style="background:var(--bronze)"></div>
+    </div>
+    <p class="reflexao-sub">Não existem respostas certas. Escreva o que vier, com calma — você pode voltar aqui quantas vezes quiser.</p>
+
+    <div id="questions"></div>
+
+    <div class="reflexao-actions">
+      <button class="btn btn-outline" onclick="copiarRespostas()">Copiar minhas respostas</button>
+      <a class="btn btn-dark" id="emailBtn" href="#">Enviar para minha terapeuta</a>
+    </div>
+    <p class="share-note">Ao clicar em "Enviar para minha terapeuta", seu aplicativo de e-mail abrirá com suas respostas já preenchidas, endereçadas a <strong>liviajc86@sou.unilavras.edu.br</strong>, prontas para revisão antes do envio. Se preferir, use o botão "Copiar minhas respostas" e cole onde for melhor para você.</p>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Este material é um recurso psicoeducativo de apoio e não substitui o acompanhamento profissional.<br>Converse com sua terapeuta sobre o que surgiu para você durante a leitura.</p>
+</div>
+
+<script>
+  const perguntas = [
+    "O que você sente que precisa provar para os outros?",
+    "Em quais situações seu valor parece depender do seu desempenho?",
+    "Que erros você sente que não tem permissão para cometer?",
+    "Que pensamentos rígidos costumam comandar suas escolhas?",
+    "O que sua \"armadura\" tenta proteger?",
+    "O que ela protege — e o que ela impede você de viver?",
+    "O que poderia mudar se você não precisasse ser perfeito(a) para se considerar digno(a)?",
+    "O que realmente importa para você além de aprovação e desempenho?",
+    "Qual seria uma pequena ação mais coerente com seus valores?",
+    "Como você falaria consigo mesmo(a) se estivesse tratando a si mesmo(a) com a mesma compaixão que ofereceria a alguém que ama?"
+  ];
+
+  const wrap = document.getElementById('questions');
+  perguntas.forEach((p, i) => {
+    const key = 'cavaleiro_resposta_' + i;
+    const block = document.createElement('div');
+    block.className = 'q-block';
+    block.innerHTML = `
+      <div class="q-num">Pergunta ${i + 1}</div>
+      <div class="q-text">${p}</div>
+      <textarea class="q-answer" id="${key}" placeholder="Escreva aqui..."></textarea>
+      <div class="save-hint" id="hint_${i}"></div>
+    `;
+    wrap.appendChild(block);
+
+    const ta = block.querySelector('textarea');
+    const hint = block.querySelector('.save-hint');
+    try {
+      const saved = localStorage.getItem(key);
+      if (saved) ta.value = saved;
+    } catch (e) {}
+
+    let timeout;
+    ta.addEventListener('input', () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        try {
+          localStorage.setItem(key, ta.value);
+          hint.textContent = 'Salvo automaticamente ✓';
+          setTimeout(() => { hint.textContent = ''; }, 2000);
+        } catch (e) {}
+      }, 500);
+    });
+  });
+
+  function coletarRespostas() {
+    let texto = 'E você: qual armadura tem usado?\n\n';
+    perguntas.forEach((p, i) => {
+      let val = '';
+      try { val = localStorage.getItem('cavaleiro_resposta_' + i) || ''; } catch (e) {}
+      texto += (i + 1) + '. ' + p + '\n' + (val.trim() || '(sem resposta ainda)') + '\n\n';
+    });
+    return texto;
+  }
+
+  function copiarRespostas() {
+    const texto = coletarRespostas();
+    navigator.clipboard.writeText(texto).then(() => {
+      alert('Respostas copiadas! Você já pode colar onde quiser.');
+    }).catch(() => {
+      alert('Não foi possível copiar automaticamente. Selecione e copie manualmente.');
+    });
+  }
+
+  document.getElementById('emailBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    const texto = coletarRespostas();
+    const assunto = encodeURIComponent('Minhas reflexões — O Cavaleiro Preso na Armadura');
+    const corpo = encodeURIComponent(texto);
+    window.location.href = `mailto:liviajc86@sou.unilavras.edu.br?subject=${assunto}&body=${corpo}`;
+  });
+</script>
+
+</body>
+</html>
